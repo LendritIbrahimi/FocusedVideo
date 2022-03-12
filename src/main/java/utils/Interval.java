@@ -1,43 +1,55 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Interval implements Comparable<Interval>{
+public class Interval {
     public float start;
     public float end;
 
-    public Interval(float start, float end){
+    public Interval(float start, float end) {
         this.start = start;
         this.end = end;
     }
 
-    @Override
-    public int compareTo(Interval interval) {
-        if (start < interval.end) {
+    // the interval sets are sorted by default and don't overlap inside the same set
+    public static List<Interval> overlap(List<Interval> firstSet, List<Interval> secondSet) {
+        List<Interval> overlappingInterval = new ArrayList<>();
+
+        int skipIndex = 0;
+        for (Interval a : firstSet) {
+            boolean hasOverlapped = false;
+            for (int i = skipIndex; i < secondSet.size() - 1; i++) {
+                Interval b = secondSet.get(i);
+
+                if (a.compareOverlap(b) == 1) {
+                    float start = Math.max(a.start, b.start);
+                    float end = Math.min(a.end, b.end);
+
+                    Interval interval = new Interval(start, end);
+                    overlappingInterval.add(interval);
+
+                    skipIndex = i;
+                    hasOverlapped = true;
+                } else if (hasOverlapped) {
+                    break;
+                }
+            }
+        }
+        return overlappingInterval;
+    }
+
+    public static float parseInterval(String str) {
+        return Float.parseFloat(str.replaceAll("[^\\d.]", ""));
+    }
+
+    public int compareOverlap(Interval interval) {
+        if (start > interval.end || end < interval.start) {
             return -1;
-        } else if (start == end) {
+        } else if (start == interval.start && end == interval.end) {
             return 0;
         } else {
             return 1;
         }
-    }
-
-    /*public static List<Interval> overlap(List<Interval> a,List<Interval> b) {
-        Collections.sort(intervals);
-        List<Interval> overlappingInterval = new ArrayList<>();
-
-        for (int i = 0; i < intervals.size()-1; i++) { //n
-            if (intervals.get(i).end > intervals.get(i+1).start) {
-                overlappingInterval.add(intervals.get(i));
-                overlappingInterval.add(intervals.get(i+1));
-            }
-        }
-        return overlappingInterval;
-    }*/
-
-    public static float parseInterval(String str){
-        return Float.parseFloat(str.replaceAll("[^\\d.]", ""));
     }
 }

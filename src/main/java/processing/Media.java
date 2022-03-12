@@ -21,26 +21,30 @@ import java.util.concurrent.TimeUnit;
 
 import static utils.Interval.parseInterval;
 
-public abstract class Media {
+public class Media {
     protected static String tempPath = "ffmpeg";
     protected FFmpeg ffmpeg;
     protected FFprobe ffprobe;
-    protected FFmpegExecutor executor;
-    protected FFmpegBuilder builder = new FFmpegBuilder();
     protected String inputPath;
     protected float duration;
+    protected FFmpegProbeResult inputProbe;
+
     private final String ffmpegPath = "ffmpeg.exe";
     private final String ffprobePath = "ffprobe.exe";
+
+    public List<Interval> emptyIntervals = new ArrayList<>();
 
     public Media(String inputPath) throws IOException {
         ffmpeg = new FFmpeg(tempPath + '/' + ffmpegPath);
         ffprobe = new FFprobe(tempPath + '/' + ffprobePath);
-        executor = new FFmpegExecutor(ffmpeg, ffprobe);
+        inputProbe = ffprobe.probe(inputPath);
 
-        FFmpegProbeResult probeResult = ffprobe.probe(inputPath);
-
-        this.duration = (float) probeResult.getFormat().duration;
+        this.duration = (float) inputProbe.getFormat().duration;
         this.inputPath = inputPath;
+    }
+
+    public FFmpegExecutor getExecutor(){
+        return new FFmpegExecutor(ffmpeg, ffprobe);
     }
 
     protected static List<Interval> parseEmptyIntervalsFile(String path, String select, float duration) throws IOException {
@@ -70,9 +74,7 @@ public abstract class Media {
         return intervals;
     }
 
-    public abstract List<Interval> getEmptyIntervals() throws IOException;
-
-    protected void startProgress(FFmpegProbeResult inputProbe, FFmpegExecutor executor) {
+    protected void startProgress(FFmpegProbeResult inputProbe, FFmpegExecutor executor, FFmpegBuilder builder) {
         FFmpegJob job = executor.createJob(builder, new ProgressListener() {
 
             final double duration_ns = inputProbe.getFormat().duration * TimeUnit.SECONDS.toNanos(1);

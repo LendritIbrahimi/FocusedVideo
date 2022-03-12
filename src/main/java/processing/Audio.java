@@ -7,25 +7,27 @@ import utils.Interval;
 import java.io.IOException;
 import java.util.List;
 
-public class Audio extends Media {
+public class Audio implements Focusable {
     final String emptyIntervalSelect = "silence";
     final String emptyIntervalFile = "tempAudio";
 
-    public Audio(String inputPath) throws IOException {
-        super(inputPath);
+    private final Media media;
+
+    public Audio(Media media){
+        this.media = media;
     }
 
     public List<Interval> getEmptyIntervals() throws IOException {
-        FFmpegProbeResult inputProbe = ffprobe.probe(this.inputPath);
+        FFmpegBuilder builder = new FFmpegBuilder();
 
-        builder.addInput(inputProbe).setVerbosity(FFmpegBuilder.Verbosity.FATAL)
+        builder.addInput(media.inputProbe).setVerbosity(FFmpegBuilder.Verbosity.FATAL)
                 .addStdoutOutput()
                 .setFormat("null")
                 .setAudioFilter("silencedetect=n=0.005:d=0.5,ametadata=mode=print:file="
-                        + tempPath + '/' + emptyIntervalFile);
+                        + Media.tempPath + '/' + emptyIntervalFile);
 
-        executor.createJob(builder).run();
+        media.getExecutor().createJob(builder).run();
 
-        return parseEmptyIntervalsFile(emptyIntervalFile, emptyIntervalSelect, duration);
+        return Media.parseEmptyIntervalsFile(emptyIntervalFile, emptyIntervalSelect, media.duration);
     }
 }

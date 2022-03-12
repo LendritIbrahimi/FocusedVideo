@@ -1,4 +1,6 @@
 import processing.Audio;
+import processing.Focusable;
+import processing.Media;
 import processing.Video;
 import utils.Interval;
 
@@ -7,17 +9,13 @@ import java.io.IOException;
 public class Application {
     public static void main(String[] args) throws IOException {
         String input = "ffmpeg/Test.mp4";
-        Video video = new Video(input);
-        Audio audio = new Audio(input);
+        Media media = new Media(input);
 
-        for (Interval interval :
-                video.getEmptyIntervals()) {
-            System.out.println("Video: " + interval.start + " - " + interval.end);
-        }
+        Focusable video = new Video(media);
+        Focusable audio = new Audio(media);
 
-        for (Interval interval :
-                audio.getEmptyIntervals()) {
-            System.out.println("Audio: " + interval.start + " - " + interval.end);
-        }
+        media.emptyIntervals = Interval.overlap(video.getEmptyIntervals(), audio.getEmptyIntervals());
+
+
     }
 }
