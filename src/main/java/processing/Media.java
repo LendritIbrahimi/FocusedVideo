@@ -7,7 +7,6 @@ import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.job.FFmpegJob;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
-
 import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
 import utils.Interval;
@@ -23,16 +22,14 @@ import static utils.Interval.parseInterval;
 
 public class Media {
     protected static String tempPath = "ffmpeg";
+    private final String ffmpegPath = "ffmpeg.exe";
+    private final String ffprobePath = "ffprobe.exe";
+    public List<Interval> emptyIntervals = new ArrayList<>();
     protected FFmpeg ffmpeg;
     protected FFprobe ffprobe;
     protected String inputPath;
-    protected float duration;
+    public float duration;
     protected FFmpegProbeResult inputProbe;
-
-    private final String ffmpegPath = "ffmpeg.exe";
-    private final String ffprobePath = "ffprobe.exe";
-
-    public List<Interval> emptyIntervals = new ArrayList<>();
 
     public Media(String inputPath) throws IOException {
         ffmpeg = new FFmpeg(tempPath + '/' + ffmpegPath);
@@ -41,10 +38,6 @@ public class Media {
 
         this.duration = (float) inputProbe.getFormat().duration;
         this.inputPath = inputPath;
-    }
-
-    public FFmpegExecutor getExecutor(){
-        return new FFmpegExecutor(ffmpeg, ffprobe);
     }
 
     protected static List<Interval> parseEmptyIntervalsFile(String path, String select, float duration) throws IOException {
@@ -74,6 +67,18 @@ public class Media {
         return intervals;
     }
 
+    public FFmpegExecutor getExecutor() {
+        return new FFmpegExecutor(ffmpeg, ffprobe);
+    }
+
+    protected String parseIntervalToFilter() {
+        String output = "";
+        for (Interval interval : emptyIntervals) {
+            output += String.format("between(t,%.2f,%.2f)+", interval.start, interval.end);
+        }
+        return output.substring(0,output.length()-1);
+    }
+
     protected void startProgress(FFmpegProbeResult inputProbe, FFmpegExecutor executor, FFmpegBuilder builder) {
         FFmpegJob job = executor.createJob(builder, new ProgressListener() {
 
@@ -82,10 +87,9 @@ public class Media {
             @Override
             public void progress(Progress progress) {
                 double percentage = progress.out_time_ns / duration_ns;
-               System.out.println(String.format(
-                       "[%.0f%%] Video Time:%s",
-                        percentage * 100,
-                        FFmpegUtils.toTimecode(progress.out_time_ns, TimeUnit.NANOSECONDS)
+                System.out.println(String.format(
+                        "[%.0f%%] Video Progress",
+                        percentage * 100
                 ));
             }
         });

@@ -39,6 +39,18 @@ public class Interval {
         return overlappingInterval;
     }
 
+    public static List<Interval> reverse(List<Interval> intervalSet, float end) {
+        List<Interval> output = new ArrayList<>();
+        float start = 0;
+        for (Interval interval : intervalSet) {
+            output.add(new Interval(start, interval.start));
+            start = interval.end;
+        }
+        output.add(new Interval(start, end));
+
+        return output;
+    }
+
     public static float parseInterval(String str) {
         return Float.parseFloat(str.replaceAll("[^\\d.]", ""));
     }

@@ -11,11 +11,13 @@ public class Application {
         String input = "ffmpeg/Test.mp4";
         Media media = new Media(input);
 
-        Focusable video = new Video(media);
+        Video video = new Video(media);
         Focusable audio = new Audio(media);
 
-        media.emptyIntervals = Interval.overlap(video.getEmptyIntervals(), audio.getEmptyIntervals());
+        media.emptyIntervals = Interval.reverse(
+                Interval.overlap(video.getEmptyIntervals(), audio.getEmptyIntervals()),
+                media.duration);
 
-
+        video.CreateVideo("ffmpeg/Output.mp4");
     }
 }
