@@ -4,7 +4,6 @@ import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import utils.Interval;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 public class Video implements Focusable {
@@ -17,29 +16,25 @@ public class Video implements Focusable {
         this.media = media;
     }
 
-    public void CreateVideo(String outputPath) {
-        FFmpegBuilder builder = new FFmpegBuilder();
-        filterToFile();
-        builder.addInput(media.inputProbe)
-                .addOutput(outputPath)
-                .addExtraArgs("-filter_script:v", "ffmpeg/tempFilterVideo","-filter_script:a","ffmpeg/tempFilterAudio");
-        media.startProgress(media.inputProbe,media.getExecutor(),builder);
-
-
+    @Override
+    public Media getMedia() {
+        return media;
     }
-    private void filterToFile(){
-        try {
-            PrintWriter writer = new PrintWriter("ffmpeg/tempFilterAudio", "UTF-8");
-            writer.println("aselect='" + media.parseIntervalToFilter() + "',asetpts=N/SR/TB");
-            writer.close();
 
-            writer = new PrintWriter("ffmpeg/tempFilterVideo", "UTF-8");
-            writer.println("select='" + media.parseIntervalToFilter() + "',setpts=N/FRAME_RATE/TB");
-            writer.close();
-        }
-        catch(IOException err){
-            System.err.println(err.getMessage());
-        }
+    public void encodeFilter() {
+        media.filters.addAll(List.of("-preset", "slow",
+                "-codec:a", "libvorbis",
+                "-b:a", "128k",
+                "-codec:v", "libx264",
+                "-pix_fmt", "yuv420p",
+                "-b:v", "4500k",
+                "-minrate", "4500k",
+                "-maxrate", "9000k",
+                "-bufsize", "9000k"));
+    }
+
+    public void focusFilter() {
+        media.filters.addAll(List.of(new String[]{"-filter_script:v", "ffmpeg/tempFilterVideo"}));
     }
 
     public List<Interval> getEmptyIntervals() throws IOException {
@@ -55,4 +50,6 @@ public class Video implements Focusable {
 
         return Media.parseEmptyIntervalsFile(emptyIntervalFile, emptyIntervalSelect, media.duration);
     }
+
+
 }
