@@ -1,17 +1,14 @@
 # FocusedVideo &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/LendritIbrahimi/FocusedVideo/blob/main/LICENSE)
 
-FocusedVideo is a Java video-processing application in development that allows the removal of still-frames and audio silence from a media file.
+FocusedVideo is a Java video-processing application that allows the removal of still-frames and audio silence from a media file.
 
-## Installation
-
-Download the latest release and run it using the command line.
 
 ## Usage
 
-In order to run the application, you need to run the following command:
+The application can be run from the command line:
 
 ```
-Usage: java app.java [options]
+Usage: java -c focusedvideo.jar [options]
 
 Options:
   Required
@@ -25,19 +22,19 @@ Options:
 
 ## Examples
 
-### Remove audio silence and still frames
+#### Remove audio silence and still frames
 ```
-java app.java -input "input.mp4" -output "output.mp4" -type "full"
-```
-
-### Make voice more audible on high background noise recording
-```
-java app.java -input "input.mp3" -output "output.mp3" -voicefilter
+java -c focusedvideo.jar -input "input.mp4" -output "output.mp4" -type "full"
 ```
 
-### Encode to MP4
+#### Make voice more audible on high background noise recording
 ```
-java app.java -input "input.mov" -output "output.mp4" -encode
+java -c focusedvideo.jar -input "input.mp3" -output "output.mp3" -voicefilter
+```
+
+#### Encode to MP4
+```
+java -c focusedvideo.jar -input "input.mov" -output "output.mp4" -encode
 ```
 
 ## Contributing
