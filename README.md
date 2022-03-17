@@ -43,5 +43,7 @@ java -c focusedvideo.jar -input "output.mp4" -output "output1.mp4" -type VIDEO
 
 Contributions are welcomed!
 
+To start contributing download the source code and add [FFmpeg.exe and FFprobe.exe](https://www.ffmpeg.org/download.html) to a new folder named "ffmpeg/" in the root directory of the source code.
+
 ## License
 FocusedVideo is [MIT licensed](./LICENSE).
