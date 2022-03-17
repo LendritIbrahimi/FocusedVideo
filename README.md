@@ -11,13 +11,7 @@ Download the latest release and run it using the command line.
 In order to run the application, you need to run the following command:
 
 ```
-java app.java
-```
-
-To get a description of available options:
-
-```
-Usage: app [options]
+Usage: java app.java [options]
 
 Options:
   Required
@@ -46,6 +40,9 @@ java app.java -input "input.mp3" -output "output.mp3" -voicefilter
 java app.java -input "input.mov" -output "output.mp4" -encode
 ```
 
+## Contributing
+
+Contributions are welcomed!
 
 ## License
 FocusedVideo is [MIT licensed](./LICENSE).
