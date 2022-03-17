@@ -8,7 +8,7 @@ FocusedVideo is a Java video-processing application that allows the removal of s
 The application can be run from the command line:
 
 ```
-Usage: java -c focusedvideo.jar [options]
+Usage: java -jar focusedvideo.jar [options]
 ```
 
 #### Application Options
@@ -24,26 +24,26 @@ Usage: java -c focusedvideo.jar [options]
 
 #### Remove silence and freeze-frames
 ```
-java -c focusedvideo.jar -input "input.mp4" -output "output.mp4" -type "full"
+java -jar focusedvideo.jar -input "input.mp4" -output "output.mp4" -type "full"
 ```
 
 #### Make voice more audible on high background noise recording
 ```
-java -c focusedvideo.jar -input "input.mp3" -output "output.mp3" -voicefilter
+java -jar focusedvideo.jar -input "input.mp3" -output "output.mp3" -voicefilter
 ```
 
 #### Encode to MP4 and remove freeze-frames
 ```
-java -c focusedvideo.jar -input "input.mov" -output "output.mp4" -encode
+java -jar focusedvideo.jar -input "input.mov" -output "output.mp4" -encode
 
-java -c focusedvideo.jar -input "output.mp4" -output "output1.mp4" -type VIDEO
+java -jar focusedvideo.jar -input "output.mp4" -output "output1.mp4" -type VIDEO
 ```
 
 ## Contributing
 
 Contributions are welcomed!
 
-To start contributing download the source code and add [FFmpeg.exe and FFprobe.exe](https://www.ffmpeg.org/download.html) to a new folder named "ffmpeg/" in the root directory of the source code.
+To start contributing download the source code and add [ffmpeg.exe and ffprobe.exe](https://www.ffmpeg.org/download.html) to a new folder named "ffmpeg/" in the root directory of the source code.
 
 ## License
 FocusedVideo is [MIT licensed](./LICENSE).
